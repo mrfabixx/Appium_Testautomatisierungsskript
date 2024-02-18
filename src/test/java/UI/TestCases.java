@@ -1,47 +1,32 @@
-package org.example;
+package UI;
 
+import io.appium.java_client.AppiumBy;
+import io.appium.java_client.TouchAction;
 import io.appium.java_client.android.AndroidDriver;
-import org.checkerframework.checker.units.qual.Time;
+import io.appium.java_client.touch.LongPressOptions;
+import io.appium.java_client.touch.offset.ElementOption;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.remote.DesiredCapabilities;
-import org.testng.annotations.Test;
+import org.openqa.selenium.support.ui.ExpectedCondition;
 
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.util.NoSuchElementException;
 import java.util.concurrent.TimeUnit;
 
-public class LaunchApp {
+public class TestCases {
 
     static AndroidDriver androidDriver;
 
     public static void main(String[] args) {
 
-//
-//        Driver driver = new Driver();
-//        driver.buildDriver();
-
-
         try {
+            androidDriver = Driver.buildDriver();
 
-            DesiredCapabilities desiredCapabilities = new DesiredCapabilities();
-            desiredCapabilities.setCapability("deviceName", "Medium  Phone API 33 2");
-            desiredCapabilities.setCapability("udid", "emulator-5554");
-            desiredCapabilities.setCapability("platformName", "Android");
-            desiredCapabilities.setCapability("platformVersion", "13.0");
-            desiredCapabilities.setCapability("app", "C:\\Users\\fhoti\\Downloads\\task.apk");
-            desiredCapabilities.setCapability("automationName", "UIAutomator2");
-
-            //Set up the Appium server URL to connect to
-            URL appiumServer = new URL("http://localhost:4723/wd/hub");
-            androidDriver = new AndroidDriver(appiumServer, desiredCapabilities);
-            androidDriver.manage().timeouts();
-            System.out.println("Application started...");
         } catch (Exception e) {
-            System.out.println("Server could not Connect");
+            System.out.println("Server could not Connect.." + e.getMessage());
+            e.printStackTrace();
         }
 
-//
+        //Check the Setting menu
         WebElement menulayout = androidDriver.findElement(By.xpath("//android.view.ViewGroup[@resource-id=\"org.tasks:id/bottomAppBar\"]/android.widget.ImageButton"));
         menulayout.click();
         androidDriver.manage().timeouts().implicitlyWait(3, TimeUnit.SECONDS);
@@ -73,7 +58,7 @@ public class LaunchApp {
         //Selct a Date
         WebElement startDate = androidDriver.findElement(By.xpath("//android.widget.TextView[@text=\"No due date\"]"));
         startDate.click();
-//        selectDate("15 February 2024");
+//        selectDate("20 February 2024");
 
         WebElement okButton = androidDriver.findElement(By.id("org.tasks:id/ok_button"));
         okButton.click();
@@ -97,18 +82,83 @@ public class LaunchApp {
         // Check the RecycleView List
         WebElement recycleView = androidDriver.findElement(By.id("org.tasks:id/recycler_view"));
         boolean isvisible = recycleView.isDisplayed();
-        if (isvisible){
+        if (isvisible) {
             System.out.println("Recycleview is visible..");
         }
 
         // Check if Task is displayed in the RecyclerView
         String xpathTemplate = "//android.widget.TextView[@resource-id=\"org.tasks:id/title\" and @text=\"%s\"]";
-        String xpath = String.format(xpathTemplate,taskinput);
-        WebElement taskinView = androidDriver.findElement(By.xpath(xpath));
+        String xpathTask = String.format(xpathTemplate, taskinput);
+        WebElement taskinView = androidDriver.findElement(By.xpath(xpathTask));
         boolean isvisilbe = taskinView.isDisplayed();
-        if (isvisilbe){
+        if (isvisilbe) {
             System.out.println("Task is visible..");
         }
+        //T3 TestCase edit the Task
+        WebElement taskedit = androidDriver.findElement(By.id("org.tasks:id/title"));
+        taskedit.click();
+        WebElement subtask = androidDriver.findElement(By.xpath("//android.widget.TextView[@text=\"Add subtask\"]"));
+        subtask.click();
+        androidDriver.manage().timeouts().implicitlyWait(2,TimeUnit.SECONDS);
+        WebElement editSubTask = androidDriver.findElement(By.xpath("//android.widget.EditText/android.view.View"));
+        editSubTask.clear();
+        editSubTask.sendKeys("Dies Sind Subtask informationen");
+        WebElement timeEdit = androidDriver.findElement(By.xpath("//android.widget.TextView[@text=\"Timer\"]"));
+        timeEdit.click();
+        WebElement estimatedDuration= androidDriver.findElement(By.id("org.tasks:id/estimatedDuration"));
+        estimatedDuration.click();
+        WebElement incrementTime = androidDriver.findElement(By.xpath("(//android.widget.ImageButton[@resource-id=\"org.tasks:id/increment\"])[1]"));
+        incrementTime.click();
+        WebElement confirmButton = androidDriver.findElement(By.id("android:id/button1"));
+        confirmButton.click();
+        confirmButton.click();
+        saveButton.click();
+//        WebElement checkBoxSubtask = androidDriver.findElement(By.xpath("(//androidx.compose.ui.platform.ComposeView[@resource-id=\"org.tasks:id/chip_group\"])[1]/android.view.View/android.view.View[1]/android.widget.CheckBox"));
+//        checkBoxSubtask.click();
+//        androidDriver.manage().timeouts().implicitlyWait(2,TimeUnit.SECONDS);
+//
+//        try{
+//            androidDriver.wait(ExpectedCondition
+//        }
+
+
+
+
+
+
+
+
+
+
+        // T8 TestCase delete Task und check if Task was deleted from Recyclerview
+//        WebElement rowbodyLongpress = androidDriver.findElement(AppiumBy.id("org.tasks:id/rowBody"));
+//        TouchAction touchAction = new TouchAction(androidDriver);
+//        touchAction.longPress(LongPressOptions.longPressOptions().withElement(ElementOption.element(rowbodyLongpress)))
+//                .perform();
+//
+//        WebElement threedotsmenu = androidDriver.findElement(By.xpath("(//android.widget.ImageView[@content-desc=\"More options\"])[2]"));
+//        threedotsmenu.click();
+//        WebElement deleteButton = androidDriver.findElement(By.xpath("//android.widget.TextView[@resource-id=\"org.tasks:id/title\" and @text=\"Delete\"]"));
+//        deleteButton.click();
+//        WebElement popupwindow = androidDriver.findElement(By.id("android:id/button1"));
+//        popupwindow.click();
+//
+//        // Check if Task item was deleted succesfully
+//        try {
+//            WebElement scrollView = androidDriver.findElement(By.className("android.widget.ScrollView"));
+//            androidDriver.manage().timeouts().implicitlyWait(2,TimeUnit.SECONDS);
+//            WebElement searchedItem = scrollView.findElement(By.xpath(xpathTask));
+//            if (searchedItem.isDisplayed()){
+//                System.out.println("Task still in the Scrollview");
+//            }
+//        }catch (NoSuchElementException e){
+//            System.out.println("Task was deleted successfully");
+//        }
+
+
+        //T3 TestCase
+
+
 
     }
 
