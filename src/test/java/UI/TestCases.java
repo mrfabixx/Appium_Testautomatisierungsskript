@@ -1,56 +1,102 @@
 package UI;
 
-import io.appium.java_client.MobileCommand;
+import UI.Driver;
 import io.appium.java_client.android.AndroidDriver;
-import io.appium.java_client.pagefactory.AndroidBy;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.bidi.log.Log;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.openqa.selenium.bidi.log.Log;
 
 public class TestCases {
 
     static AndroidDriver androidDriver;
     private static final Logger logger = LogManager.getLogger(String.valueOf(TestCases.class));
 
+    static Timer timer = new Timer();
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
 
         try {
             androidDriver = Driver.buildDriver();
 
+
         } catch (Exception e) {
-           logger.info("-- Android driver couldn't connect");
+            logger.info("-- Android driver couldn't connect");
             e.printStackTrace();
         }
 
+        // Text inputs für Testfälle
+        String noteTile = "";
+
+        String firstCategorie = "";
+        String secondCategorie = "";
+        String thirdCategrie = "";
+
+        String checklistTitle = "";
+        String item1 = "";
+        String item2 = "";
+        String item3 = "";
+
+
+        // Read Json File Data for Test input
+        String data = new String(Files.readAllBytes(Paths.get("src/test/resources/testData.json")));
+        JSONArray jsonArray = new JSONArray(data);
+        JSONObject firstelement = jsonArray.getJSONObject(0);
+        JSONArray categories = firstelement.getJSONArray("categories");
+
+        for (int i = 0; i < categories.length(); i++) {
+            firstCategorie = categories.getString(0);
+            secondCategorie = categories.getString(1);
+            thirdCategrie = categories.getString(2);
+        }
+        JSONObject secondelement = jsonArray.getJSONObject(1);
+        noteTile = secondelement.getString("noteTitle");
+        JSONObject thirdelement = jsonArray.getJSONObject(3);
+        checklistTitle = thirdelement.getString("checklistTitle");
+        JSONObject itemsobject = jsonArray.getJSONObject(3);
+        JSONArray itemsarray = itemsobject.getJSONArray("checklistItems");
+
+        for (int i = 0; i < itemsarray.length(); i++) {
+            item1 = itemsarray.getString(0);
+            item2 = itemsarray.getString(1);
+            item3 = itemsarray.getString(2);
+        }
+
+
         //Aufrufen der Testfälle
-//        addTask();
-//        androidDriver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
-//        manageCategories();
-//        androidDriver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
-//        createChecklist();
-
-//        deleteTasks();
-
+        WebElement skipbutton = androidDriver.findElement(By.id("org.secuso.privacyfriendlynotes:id/btn_skip"));
+        skipbutton.click();
+        addTask(noteTile);
+        androidDriver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
+        manageCategories(firstCategorie, secondCategorie, thirdCategrie);
+        androidDriver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
+        createChecklist(checklistTitle, item1, item2, item3);
+        androidDriver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
+        deleteTasks(noteTile);
+        androidDriver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
         shareTask();
 
         // Beenden des Android Driver nachdem Testskripte durchgelaufen sind
         androidDriver.quit();
-        logger.info("-- Android driver was shut down after Testskript run");
-
-
-
+        System.out.println("-- Android driver was shut down after Testskript run");
 
     }
+
     //T1
-    public static void addTask(){
-        WebElement skipbutton = androidDriver.findElement(By.id("org.secuso.privacyfriendlynotes:id/btn_skip"));
-        skipbutton.click();
+    public static void addTask(String note) {
+        timer.start();
+//        WebElement skipbutton = androidDriver.findElement(By.id("org.secuso.privacyfriendlynotes:id/btn_skip"));
+//        skipbutton.click();
         androidDriver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
         WebElement addNotizButton = androidDriver.findElement(By.id("org.secuso.privacyfriendlynotes:id/fab_expand_menu_button"));
         addNotizButton.click();
@@ -58,7 +104,7 @@ public class TestCases {
         add_text.click();
         WebElement etname = androidDriver.findElement(By.id("org.secuso.privacyfriendlynotes:id/etName"));
         etname.clear();
-        etname.sendKeys("Notiz 1");
+        etname.sendKeys(note);
         WebElement category = androidDriver.findElement(By.id("org.secuso.privacyfriendlynotes:id/text_input_end_icon"));
         category.isDisplayed();
         WebElement fab_menu = androidDriver.findElement(By.id("org.secuso.privacyfriendlynotes:id/fab_menu"));
@@ -76,9 +122,11 @@ public class TestCases {
         recylerView.isDisplayed();
         recylerView.findElements(By.xpath("//androidx.recyclerview.widget.RecyclerView[@resource-id=\"org.secuso.privacyfriendlynotes:id/recycler_view\"]/android.widget.FrameLayout"));
 
+        timer.stopAndPrintDuration();
     }
 
-    public static void manageCategories(){
+    public static void manageCategories(String firstCategorie, String secondCategorie, String thirdCategorie) {
+        timer.start();
 //        skipbutton.click();
         WebElement navigationDrawer = androidDriver.findElement(By.xpath("//android.widget.ImageButton[@content-desc=\"Open navigation drawer\"]"));
         navigationDrawer.click();
@@ -90,89 +138,97 @@ public class TestCases {
         WebElement enterTextName = androidDriver.findElement(By.id("org.secuso.privacyfriendlynotes:id/etName"));
         enterTextName.click();
         enterTextName.clear();
-        enterTextName.sendKeys("Notizen ");
+        enterTextName.sendKeys(firstCategorie);
 
         WebElement add_btn = androidDriver.findElement(By.id("org.secuso.privacyfriendlynotes:id/btn_add"));
         add_btn.click();
 
         //Erstellen der Kategories Checklisten
         enterTextName.click();
-        enterTextName.sendKeys("Checklisten");
+        enterTextName.sendKeys(secondCategorie);
         add_btn.click();
 
         //Erstellen der Kategorie Skizzen
         enterTextName.click();
-        enterTextName.sendKeys("Skizzen");
+        enterTextName.sendKeys(thirdCategorie);
         add_btn.click();
 
         WebElement backarrow = androidDriver.findElement(By.xpath("//android.widget.ImageButton[@content-desc=\"Navigate up\"]"));
         backarrow.click();
 
         // Check if Kategorien erstellt worden sind im RecylerView //TODO: Recylerview schwer testbar in appium
-        WebElement recylerView =  androidDriver.findElement(By.id("org.secuso.privacyfriendlynotes:id/recyclerview_category"));
-        List<WebElement> elements;
+//        WebElement recylerView = androidDriver.findElement(By.id("org.secuso.privacyfriendlynotes:id/recyclerview_category"));
+//        List<WebElement> elements;
+
+        timer.stopAndPrintDuration();
 
     }
 
-    public static void createChecklist(){
-       WebElement fab_menu_btn = androidDriver.findElement(By.id("org.secuso.privacyfriendlynotes:id/fab_expand_menu_button"));
-       fab_menu_btn.click();
-       WebElement createChecklist = androidDriver.findElement(By.id("org.secuso.privacyfriendlynotes:id/fab_checklist"));
-       createChecklist.click();
-       WebElement enterChecklistName = androidDriver.findElement(By.id("org.secuso.privacyfriendlynotes:id/etName"));
-       enterChecklistName.click();
-       enterChecklistName.clear();
-       enterChecklistName.sendKeys("Checklist 1 ");
+    public static void createChecklist(String checklistTile, String item1, String item2, String item3) {
+        timer.start();
+        WebElement fab_menu_btn = androidDriver.findElement(By.id("org.secuso.privacyfriendlynotes:id/fab_expand_menu_button"));
+        fab_menu_btn.click();
+        WebElement createChecklist = androidDriver.findElement(By.id("org.secuso.privacyfriendlynotes:id/fab_checklist"));
+        createChecklist.click();
+        WebElement enterChecklistName = androidDriver.findElement(By.id("org.secuso.privacyfriendlynotes:id/etName"));
+        enterChecklistName.click();
+        enterChecklistName.clear();
+        enterChecklistName.sendKeys(checklistTile);
 
-       WebElement newItem = androidDriver.findElement(By.id("org.secuso.privacyfriendlynotes:id/etNewItem"));
-       newItem.click();
-       newItem.sendKeys("Item 1 ");
-       WebElement btn_add = androidDriver.findElement(By.id("org.secuso.privacyfriendlynotes:id/btn_add"));
-       btn_add.click();
+        WebElement newItem = androidDriver.findElement(By.id("org.secuso.privacyfriendlynotes:id/etNewItem"));
+        newItem.click();
+        newItem.sendKeys(item1);
+        WebElement btn_add = androidDriver.findElement(By.id("org.secuso.privacyfriendlynotes:id/btn_add"));
+        btn_add.click();
 
-      newItem.click();
-      newItem.sendKeys("item 2");
-      btn_add.click();
+        newItem.click();
+        newItem.sendKeys(item2);
+        btn_add.click();
 
-      newItem.click();
-      newItem.sendKeys("item 3");
-      btn_add.click();
+        newItem.click();
+        newItem.sendKeys(item3);
+        btn_add.click();
 
-      WebElement backarrow = androidDriver.findElement(By.xpath("//android.widget.ImageButton[@content-desc=\"Navigate up\"]"));
-      backarrow.click();
+        WebElement backarrow = androidDriver.findElement(By.xpath("//android.widget.ImageButton[@content-desc=\"Navigate up\"]"));
+        backarrow.click();
+        timer.stopAndPrintDuration();
 
-      //TODO check ob Toast message erschienen ist
+        //TODO check ob Toast message erschienen ist
 
-      //TODO: Check liste ob elemente richtig angezeigt werden
+        //TODO: Check liste ob elemente richtig angezeigt werden
 
     }
 
-    public static void deleteTasks(){
-        addTask();
+    public static void deleteTasks(String note) {
+
+        timer.start();
+        addTask(note);
         WebElement reyclerview = androidDriver.findElement(By.xpath("//androidx.recyclerview.widget.RecyclerView[@resource-id=\"org.secuso.privacyfriendlynotes:id/recycler_view\"]/android.widget.FrameLayout"));
         reyclerview.click();
         WebElement options = androidDriver.findElement(By.xpath("//android.widget.ImageView[@content-desc=\"More options\"]"));
         options.click();
         WebElement deleteOption = androidDriver.findElement(By.xpath("(//android.widget.LinearLayout[@resource-id=\"org.secuso.privacyfriendlynotes:id/content\"])[2]"));
         deleteOption.click();
-        androidDriver.manage().timeouts().implicitlyWait(2,TimeUnit.SECONDS);
+        androidDriver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
 
-        WebElement widgetbtn= androidDriver.findElement(By.xpath("//android.widget.Button[@resource-id=\"android:id/button1\"]"));
+        WebElement widgetbtn = androidDriver.findElement(By.xpath("//android.widget.Button[@resource-id=\"android:id/button1\"]"));
         widgetbtn.click();
         WebElement recylerView = androidDriver.findElement(By.id("org.secuso.privacyfriendlynotes:id/recycler_view"));
-        if(!recylerView.isDisplayed()){
+        if (!recylerView.isDisplayed()) {
             System.out.println("Recylerview doesnt show");
         }
+
+        timer.stopAndPrintDuration();
 
         //TODO check if item was deleted
 
 
     }
 
-    public static void shareTask(){
-        WebElement skipbutton = androidDriver.findElement(By.id("org.secuso.privacyfriendlynotes:id/btn_skip"));
-        skipbutton.click();
-        androidDriver.manage().timeouts().implicitlyWait(2,TimeUnit.SECONDS);
+    public static void shareTask() {
+        timer.start();
+
+        androidDriver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
         WebElement menu = androidDriver.findElement(By.id("org.secuso.privacyfriendlynotes:id/fab_expand_menu_button"));
         menu.click();
         WebElement createtask = androidDriver.findElement(By.id("org.secuso.privacyfriendlynotes:id/fab_text"));
@@ -191,6 +247,7 @@ public class TestCases {
         WebElement googledriveSaveBtn = androidDriver.findElement(By.id("com.google.android.apps.docs:id/save_button"));
         googledriveSaveBtn.click();
 
+        timer.stopAndPrintDuration();
     }
 
 }

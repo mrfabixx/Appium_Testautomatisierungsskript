@@ -1,0 +1,38 @@
+[
+  {
+    "categories": [
+      "Notizen",
+      "Checklisten",
+      "Skizzen"
+    ]
+  },
+  {
+    "noteTitle": "Notiz 1",
+    "noteContent": "Inhalt für Notiz 1",
+    "textStyle": {
+      "underline": true,
+      "italics": false,
+      "bold": true
+    }
+  },
+  {
+    "noteTitle2": "Notiz 2",
+    "noteContent": "Inhalt für Notiz 2",
+    "textStyle": {
+      "underline": false,
+      "italics": true,
+      "bold": false
+    }
+  },
+  {
+    "checklistTitle": "Item Checkliste",
+    "checklistItems": [
+      "Item 1",
+      "Item 2",
+      "Item 3"
+    ]
+  },
+  {
+    "sketchTitle": "NotizenSkizze"
+  }
+]
