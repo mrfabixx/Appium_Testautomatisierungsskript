@@ -12,12 +12,15 @@ public class Driver {
         public static AndroidDriver buildDriver(){
 
             DesiredCapabilities desiredCapabilities = new DesiredCapabilities();
-            desiredCapabilities.setCapability("deviceName", "Medium  Phone API 33 2");
+            desiredCapabilities.setCapability("deviceName", "Phone API 33");
             desiredCapabilities.setCapability("udid", "emulator-5554");
             desiredCapabilities.setCapability("platformName", "Android");
             desiredCapabilities.setCapability("platformVersion", "13.0");
-            desiredCapabilities.setCapability("app", "C:\\Users\\fhoti\\Downloads\\task.apk");
+            desiredCapabilities.setCapability("app", "C:\\Users\\fhoti\\Downloads\\org.secuso.privacyfriendlynotes_18.apk");
             desiredCapabilities.setCapability("automationName", "UIAutomator2");
+            desiredCapabilities.setCapability("appPackage","org.secuso.privacyfriendlynotes");
+            desiredCapabilities.setCapability("appActivity","org.secuso.privacyfriendlynotes.ui.SplashActivity");
+
 
             try {
                 URL appiumServer = new URL("http://localhost:4723/wd/hub");
@@ -30,9 +33,4 @@ public class Driver {
 
             return androidDriver;
         }
-
-
-        //Set up the Appium server URL to connect to
-
-
 }

@@ -1,20 +1,22 @@
 package UI;
 
-import io.appium.java_client.AppiumBy;
-import io.appium.java_client.TouchAction;
+import io.appium.java_client.MobileCommand;
 import io.appium.java_client.android.AndroidDriver;
-import io.appium.java_client.touch.LongPressOptions;
-import io.appium.java_client.touch.offset.ElementOption;
+import io.appium.java_client.pagefactory.AndroidBy;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.ui.ExpectedCondition;
+import org.openqa.selenium.bidi.log.Log;
 
-import java.util.NoSuchElementException;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class TestCases {
 
     static AndroidDriver androidDriver;
+    private static final Logger logger = LogManager.getLogger(String.valueOf(TestCases.class));
+
 
     public static void main(String[] args) {
 
@@ -22,161 +24,173 @@ public class TestCases {
             androidDriver = Driver.buildDriver();
 
         } catch (Exception e) {
-            System.out.println("Server could not Connect.." + e.getMessage());
+           logger.info("-- Android driver couldn't connect");
             e.printStackTrace();
         }
 
-        //Check the Setting menu
-        WebElement menulayout = androidDriver.findElement(By.xpath("//android.view.ViewGroup[@resource-id=\"org.tasks:id/bottomAppBar\"]/android.widget.ImageButton"));
-        menulayout.click();
-        androidDriver.manage().timeouts().implicitlyWait(3, TimeUnit.SECONDS);
-        WebElement settings = androidDriver.findElement(By.xpath("//android.widget.TextView[@resource-id=\"org.tasks:id/text\" and @text=\"Settings\"]"));
-        settings.click();
-        WebElement notifications = androidDriver.findElement(By.xpath("//android.widget.TextView[@resource-id=\"android:id/title\" and @text=\"Notifications\"]"));
-        notifications.click();
-        WebElement toolgeSwitch = androidDriver.findElement(By.xpath("(//android.widget.Switch[@resource-id=\"org.tasks:id/switchWidget\"])[1]"));
-        if (!toolgeSwitch.isSelected()) {
-            toolgeSwitch.click();
-        }
-        WebElement backarrow = androidDriver.findElement(By.className("android.widget.ImageButton"));
-        backarrow.click();
-        backarrow.click();
+        //Aufrufen der Testfälle
+//        addTask();
+//        androidDriver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
+//        manageCategories();
+//        androidDriver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
+//        createChecklist();
+
+//        deleteTasks();
+
+        shareTask();
+
+        // Beenden des Android Driver nachdem Testskripte durchgelaufen sind
+        androidDriver.quit();
+        logger.info("-- Android driver was shut down after Testskript run");
 
 
-//            T1 Testcase Add a To do Task wich propertys and save the task
-//            The task button to enter a task
-        WebElement taskbutton = androidDriver.findElement(By.id("org.tasks:id/bottomAppBar"));
-        taskbutton.click();
-        androidDriver.manage().timeouts().implicitlyWait(3, TimeUnit.SECONDS);
-        //Enter your Task name
-        String taskinput = "Aufgabe 1";
-        WebElement taskName = androidDriver.findElement(By.id("org.tasks:id/title"));
-        taskName.clear();
-        taskName.sendKeys(taskinput);
-        //Enter the Date is due
 
-        //Selct a Date
-        WebElement startDate = androidDriver.findElement(By.xpath("//android.widget.TextView[@text=\"No due date\"]"));
-        startDate.click();
-//        selectDate("20 February 2024");
 
-        WebElement okButton = androidDriver.findElement(By.id("org.tasks:id/ok_button"));
-        okButton.click();
-        // Prioroty Switches
-        priorotyButton(1);
-        priorotyButton(2);
-        priorotyButton(3);
-        priorotyButton(4);
-
+    }
+    //T1
+    public static void addTask(){
+        WebElement skipbutton = androidDriver.findElement(By.id("org.secuso.privacyfriendlynotes:id/btn_skip"));
+        skipbutton.click();
         androidDriver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
-        // Add a subtask
-        WebElement element = androidDriver.findElement(By.xpath("//android.widget.TextView[@text=\"Add subtask\"]"));
-        element.click();
-        element.clear();
-//        element.sendKeys("Subtask 1 ");
+        WebElement addNotizButton = androidDriver.findElement(By.id("org.secuso.privacyfriendlynotes:id/fab_expand_menu_button"));
+        addNotizButton.click();
+        WebElement add_text = androidDriver.findElement(By.id("org.secuso.privacyfriendlynotes:id/fab_text"));
+        add_text.click();
+        WebElement etname = androidDriver.findElement(By.id("org.secuso.privacyfriendlynotes:id/etName"));
+        etname.clear();
+        etname.sendKeys("Notiz 1");
+        WebElement category = androidDriver.findElement(By.id("org.secuso.privacyfriendlynotes:id/text_input_end_icon"));
+        category.isDisplayed();
+        WebElement fab_menu = androidDriver.findElement(By.id("org.secuso.privacyfriendlynotes:id/fab_menu"));
+        fab_menu.isDisplayed();
+        fab_menu.click();
+        WebElement btn_underline = androidDriver.findElement(By.id("org.secuso.privacyfriendlynotes:id/btn_underline"));
+        btn_underline.isDisplayed();
+        WebElement btn_italics = androidDriver.findElement(By.id("org.secuso.privacyfriendlynotes:id/btn_italics"));
+        btn_italics.isDisplayed();
+        WebElement btn_bold = androidDriver.findElement(By.id("org.secuso.privacyfriendlynotes:id/btn_bold"));
+        btn_bold.isDisplayed();
+        WebElement save_btn = androidDriver.findElement(By.id("org.secuso.privacyfriendlynotes:id/action_save"));
+        save_btn.click();
+        WebElement recylerView = androidDriver.findElement(By.id("org.secuso.privacyfriendlynotes:id/recycler_view"));
+        recylerView.isDisplayed();
+        recylerView.findElements(By.xpath("//androidx.recyclerview.widget.RecyclerView[@resource-id=\"org.secuso.privacyfriendlynotes:id/recycler_view\"]/android.widget.FrameLayout"));
 
-        //Save the Task
-        WebElement saveButton = androidDriver.findElement(By.xpath("//android.widget.ImageButton[@content-desc=\"Save\"]"));
-        saveButton.click();
+    }
 
-        // Check the RecycleView List
-        WebElement recycleView = androidDriver.findElement(By.id("org.tasks:id/recycler_view"));
-        boolean isvisible = recycleView.isDisplayed();
-        if (isvisible) {
-            System.out.println("Recycleview is visible..");
-        }
+    public static void manageCategories(){
+//        skipbutton.click();
+        WebElement navigationDrawer = androidDriver.findElement(By.xpath("//android.widget.ImageButton[@content-desc=\"Open navigation drawer\"]"));
+        navigationDrawer.click();
+        WebElement manacategories = androidDriver.findElement(By.xpath("//android.widget.CheckedTextView[@resource-id=\"org.secuso.privacyfriendlynotes:id/design_menu_item_text\" and @text=\"Manage categories\"]"));
+        manacategories.isDisplayed();
+        manacategories.click();
 
-        // Check if Task is displayed in the RecyclerView
-        String xpathTemplate = "//android.widget.TextView[@resource-id=\"org.tasks:id/title\" and @text=\"%s\"]";
-        String xpathTask = String.format(xpathTemplate, taskinput);
-        WebElement taskinView = androidDriver.findElement(By.xpath(xpathTask));
-        boolean isvisilbe = taskinView.isDisplayed();
-        if (isvisilbe) {
-            System.out.println("Task is visible..");
-        }
-        //T3 TestCase edit the Task
-        WebElement taskedit = androidDriver.findElement(By.id("org.tasks:id/title"));
-        taskedit.click();
-        WebElement subtask = androidDriver.findElement(By.xpath("//android.widget.TextView[@text=\"Add subtask\"]"));
-        subtask.click();
+        //Erstellen der Kategorie Notizen
+        WebElement enterTextName = androidDriver.findElement(By.id("org.secuso.privacyfriendlynotes:id/etName"));
+        enterTextName.click();
+        enterTextName.clear();
+        enterTextName.sendKeys("Notizen ");
+
+        WebElement add_btn = androidDriver.findElement(By.id("org.secuso.privacyfriendlynotes:id/btn_add"));
+        add_btn.click();
+
+        //Erstellen der Kategories Checklisten
+        enterTextName.click();
+        enterTextName.sendKeys("Checklisten");
+        add_btn.click();
+
+        //Erstellen der Kategorie Skizzen
+        enterTextName.click();
+        enterTextName.sendKeys("Skizzen");
+        add_btn.click();
+
+        WebElement backarrow = androidDriver.findElement(By.xpath("//android.widget.ImageButton[@content-desc=\"Navigate up\"]"));
+        backarrow.click();
+
+        // Check if Kategorien erstellt worden sind im RecylerView //TODO: Recylerview schwer testbar in appium
+        WebElement recylerView =  androidDriver.findElement(By.id("org.secuso.privacyfriendlynotes:id/recyclerview_category"));
+        List<WebElement> elements;
+
+    }
+
+    public static void createChecklist(){
+       WebElement fab_menu_btn = androidDriver.findElement(By.id("org.secuso.privacyfriendlynotes:id/fab_expand_menu_button"));
+       fab_menu_btn.click();
+       WebElement createChecklist = androidDriver.findElement(By.id("org.secuso.privacyfriendlynotes:id/fab_checklist"));
+       createChecklist.click();
+       WebElement enterChecklistName = androidDriver.findElement(By.id("org.secuso.privacyfriendlynotes:id/etName"));
+       enterChecklistName.click();
+       enterChecklistName.clear();
+       enterChecklistName.sendKeys("Checklist 1 ");
+
+       WebElement newItem = androidDriver.findElement(By.id("org.secuso.privacyfriendlynotes:id/etNewItem"));
+       newItem.click();
+       newItem.sendKeys("Item 1 ");
+       WebElement btn_add = androidDriver.findElement(By.id("org.secuso.privacyfriendlynotes:id/btn_add"));
+       btn_add.click();
+
+      newItem.click();
+      newItem.sendKeys("item 2");
+      btn_add.click();
+
+      newItem.click();
+      newItem.sendKeys("item 3");
+      btn_add.click();
+
+      WebElement backarrow = androidDriver.findElement(By.xpath("//android.widget.ImageButton[@content-desc=\"Navigate up\"]"));
+      backarrow.click();
+
+      //TODO check ob Toast message erschienen ist
+
+      //TODO: Check liste ob elemente richtig angezeigt werden
+
+    }
+
+    public static void deleteTasks(){
+        addTask();
+        WebElement reyclerview = androidDriver.findElement(By.xpath("//androidx.recyclerview.widget.RecyclerView[@resource-id=\"org.secuso.privacyfriendlynotes:id/recycler_view\"]/android.widget.FrameLayout"));
+        reyclerview.click();
+        WebElement options = androidDriver.findElement(By.xpath("//android.widget.ImageView[@content-desc=\"More options\"]"));
+        options.click();
+        WebElement deleteOption = androidDriver.findElement(By.xpath("(//android.widget.LinearLayout[@resource-id=\"org.secuso.privacyfriendlynotes:id/content\"])[2]"));
+        deleteOption.click();
         androidDriver.manage().timeouts().implicitlyWait(2,TimeUnit.SECONDS);
-        WebElement editSubTask = androidDriver.findElement(By.xpath("//android.widget.EditText/android.view.View"));
-        editSubTask.clear();
-        editSubTask.sendKeys("Dies Sind Subtask informationen");
-        WebElement timeEdit = androidDriver.findElement(By.xpath("//android.widget.TextView[@text=\"Timer\"]"));
-        timeEdit.click();
-        WebElement estimatedDuration= androidDriver.findElement(By.id("org.tasks:id/estimatedDuration"));
-        estimatedDuration.click();
-        WebElement incrementTime = androidDriver.findElement(By.xpath("(//android.widget.ImageButton[@resource-id=\"org.tasks:id/increment\"])[1]"));
-        incrementTime.click();
-        WebElement confirmButton = androidDriver.findElement(By.id("android:id/button1"));
-        confirmButton.click();
-        confirmButton.click();
-        saveButton.click();
-//        WebElement checkBoxSubtask = androidDriver.findElement(By.xpath("(//androidx.compose.ui.platform.ComposeView[@resource-id=\"org.tasks:id/chip_group\"])[1]/android.view.View/android.view.View[1]/android.widget.CheckBox"));
-//        checkBoxSubtask.click();
-//        androidDriver.manage().timeouts().implicitlyWait(2,TimeUnit.SECONDS);
-//
-//        try{
-//            androidDriver.wait(ExpectedCondition
-//        }
 
+        WebElement widgetbtn= androidDriver.findElement(By.xpath("//android.widget.Button[@resource-id=\"android:id/button1\"]"));
+        widgetbtn.click();
+        WebElement recylerView = androidDriver.findElement(By.id("org.secuso.privacyfriendlynotes:id/recycler_view"));
+        if(!recylerView.isDisplayed()){
+            System.out.println("Recylerview doesnt show");
+        }
 
-
-
-
-
-
-
-
-
-        // T8 TestCase delete Task und check if Task was deleted from Recyclerview
-//        WebElement rowbodyLongpress = androidDriver.findElement(AppiumBy.id("org.tasks:id/rowBody"));
-//        TouchAction touchAction = new TouchAction(androidDriver);
-//        touchAction.longPress(LongPressOptions.longPressOptions().withElement(ElementOption.element(rowbodyLongpress)))
-//                .perform();
-//
-//        WebElement threedotsmenu = androidDriver.findElement(By.xpath("(//android.widget.ImageView[@content-desc=\"More options\"])[2]"));
-//        threedotsmenu.click();
-//        WebElement deleteButton = androidDriver.findElement(By.xpath("//android.widget.TextView[@resource-id=\"org.tasks:id/title\" and @text=\"Delete\"]"));
-//        deleteButton.click();
-//        WebElement popupwindow = androidDriver.findElement(By.id("android:id/button1"));
-//        popupwindow.click();
-//
-//        // Check if Task item was deleted succesfully
-//        try {
-//            WebElement scrollView = androidDriver.findElement(By.className("android.widget.ScrollView"));
-//            androidDriver.manage().timeouts().implicitlyWait(2,TimeUnit.SECONDS);
-//            WebElement searchedItem = scrollView.findElement(By.xpath(xpathTask));
-//            if (searchedItem.isDisplayed()){
-//                System.out.println("Task still in the Scrollview");
-//            }
-//        }catch (NoSuchElementException e){
-//            System.out.println("Task was deleted successfully");
-//        }
-
-
-        //T3 TestCase
-
+        //TODO check if item was deleted
 
 
     }
 
-    public static void selectDate(String date) {
+    public static void shareTask(){
+        WebElement skipbutton = androidDriver.findElement(By.id("org.secuso.privacyfriendlynotes:id/btn_skip"));
+        skipbutton.click();
+        androidDriver.manage().timeouts().implicitlyWait(2,TimeUnit.SECONDS);
+        WebElement menu = androidDriver.findElement(By.id("org.secuso.privacyfriendlynotes:id/fab_expand_menu_button"));
+        menu.click();
+        WebElement createtask = androidDriver.findElement(By.id("org.secuso.privacyfriendlynotes:id/fab_text"));
+        createtask.click();
+        WebElement enterName = androidDriver.findElement(By.id("org.secuso.privacyfriendlynotes:id/etName"));
+        enterName.click();
+        enterName.sendKeys("Notiz teilen auf Google Drive ");
+        WebElement options = androidDriver.findElement(By.xpath("//android.widget.ImageView[@content-desc=\"More options\"]"));
+        options.click();
+        WebElement share_btn = androidDriver.findElement(By.xpath("(//android.widget.LinearLayout[@resource-id=\"org.secuso.privacyfriendlynotes:id/content\"])[3]"));
+        share_btn.click();
 
-        String xpath = String.format("\"//android.view.View[@content-desc=\\\"%s\\\"]\"", date);
-        WebElement datumElement = androidDriver.findElement(By.xpath(xpath));
-        datumElement.click();
+        WebElement googleDriveIcon = androidDriver.findElement(By.xpath("(//android.widget.ImageView[@resource-id=\"android:id/icon\"])[2]"));
+        googleDriveIcon.click();
+
+        WebElement googledriveSaveBtn = androidDriver.findElement(By.id("com.google.android.apps.docs:id/save_button"));
+        googledriveSaveBtn.click();
+
     }
-
-    public static void priorotyButton(int zahl) {
-        String xpathtemplate = "//androidx.compose.ui.platform.ComposeView[@resource-id=\"org.tasks:id/compose_view\"]/android.view.View/android.view.View[2]/android.widget.RadioButton[%d]";
-        String xpath = String.format(xpathtemplate, zahl);
-        WebElement element = androidDriver.findElement(By.xpath(xpath));
-        element.click();
-
-
-    }
-
 
 }
