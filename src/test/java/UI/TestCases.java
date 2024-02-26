@@ -1,6 +1,5 @@
 package UI;
 
-import UI.Driver;
 import io.appium.java_client.android.AndroidDriver;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -10,19 +9,18 @@ import org.openqa.selenium.WebElement;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.openqa.selenium.bidi.log.Log;
 
 public class TestCases {
 
     static AndroidDriver androidDriver;
     private static final Logger logger = LogManager.getLogger(String.valueOf(TestCases.class));
-
     static Timer timer = new Timer();
+
+
 
     public static void main(String[] args) throws IOException {
 
@@ -76,6 +74,7 @@ public class TestCases {
         //Aufrufen der Testfälle
         WebElement skipbutton = androidDriver.findElement(By.id("org.secuso.privacyfriendlynotes:id/btn_skip"));
         skipbutton.click();
+
         addTask(noteTile);
         androidDriver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
         manageCategories(firstCategorie, secondCategorie, thirdCategrie);
@@ -94,17 +93,13 @@ public class TestCases {
 
     //T1
     public static void addTask(String note) {
+        POM element = new POM(androidDriver);
         timer.start();
-//        WebElement skipbutton = androidDriver.findElement(By.id("org.secuso.privacyfriendlynotes:id/btn_skip"));
-//        skipbutton.click();
         androidDriver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
-        WebElement addNotizButton = androidDriver.findElement(By.id("org.secuso.privacyfriendlynotes:id/fab_expand_menu_button"));
-        addNotizButton.click();
-        WebElement add_text = androidDriver.findElement(By.id("org.secuso.privacyfriendlynotes:id/fab_text"));
-        add_text.click();
-        WebElement etname = androidDriver.findElement(By.id("org.secuso.privacyfriendlynotes:id/etName"));
-        etname.clear();
-        etname.sendKeys(note);
+        element.click_Menubtn();
+        element.click_addTextbtn();
+        element.setTextInput(note);
+
         WebElement category = androidDriver.findElement(By.id("org.secuso.privacyfriendlynotes:id/text_input_end_icon"));
         category.isDisplayed();
         WebElement fab_menu = androidDriver.findElement(By.id("org.secuso.privacyfriendlynotes:id/fab_menu"));
@@ -116,8 +111,9 @@ public class TestCases {
         btn_italics.isDisplayed();
         WebElement btn_bold = androidDriver.findElement(By.id("org.secuso.privacyfriendlynotes:id/btn_bold"));
         btn_bold.isDisplayed();
-        WebElement save_btn = androidDriver.findElement(By.id("org.secuso.privacyfriendlynotes:id/action_save"));
-        save_btn.click();
+
+        element.setSave_btn();
+
         WebElement recylerView = androidDriver.findElement(By.id("org.secuso.privacyfriendlynotes:id/recycler_view"));
         recylerView.isDisplayed();
         recylerView.findElements(By.xpath("//androidx.recyclerview.widget.RecyclerView[@resource-id=\"org.secuso.privacyfriendlynotes:id/recycler_view\"]/android.widget.FrameLayout"));
@@ -209,7 +205,7 @@ public class TestCases {
         options.click();
         WebElement deleteOption = androidDriver.findElement(By.xpath("(//android.widget.LinearLayout[@resource-id=\"org.secuso.privacyfriendlynotes:id/content\"])[2]"));
         deleteOption.click();
-        androidDriver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
+        androidDriver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
 
         WebElement widgetbtn = androidDriver.findElement(By.xpath("//android.widget.Button[@resource-id=\"android:id/button1\"]"));
         widgetbtn.click();

@@ -4,6 +4,7 @@ public class Timer {
     private long startTime;
     private long endTime;
 
+
     // Startet die Zeitmessung
     public void start() {
         startTime = System.currentTimeMillis();
