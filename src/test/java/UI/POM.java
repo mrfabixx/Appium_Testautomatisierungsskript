@@ -3,6 +3,7 @@ package UI;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 
+// Abstraction class
 public class POM {
 
     WebDriver webDriver= null;

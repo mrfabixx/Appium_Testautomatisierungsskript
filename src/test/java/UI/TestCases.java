@@ -32,7 +32,7 @@ public class TestCases {
             e.printStackTrace();
         }
 
-        // Text inputs für Testfälle
+        // Text inputs for Test Cases
         String noteTile = "";
 
         String firstCategorie = "";
@@ -70,7 +70,7 @@ public class TestCases {
         }
 
 
-        //Aufrufen der Testfälle
+        //Call Test Cases
         WebElement skipbutton = androidDriver.findElement(By.id("org.secuso.privacyfriendlynotes:id/btn_skip"));
         skipbutton.click();
 
@@ -84,13 +84,13 @@ public class TestCases {
         androidDriver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
         shareTask();
 
-        // Beenden des Android Driver nachdem Testskripte durchgelaufen sind
+        // Close Android driver
         androidDriver.quit();
         System.out.println("-- Android driver was shut down after Testskript run");
 
     }
 
-    //T1
+
     public static void addTask(String note) {
         POM element = new POM(androidDriver);
         timer.start();
@@ -151,9 +151,8 @@ public class TestCases {
         WebElement backarrow = androidDriver.findElement(By.xpath("//android.widget.ImageButton[@content-desc=\"Navigate up\"]"));
         backarrow.click();
 
-        // Check if Kategorien erstellt worden sind im RecylerView //TODO: Recylerview schwer testbar in appium
-//        WebElement recylerView = androidDriver.findElement(By.id("org.secuso.privacyfriendlynotes:id/recyclerview_category"));
-//        List<WebElement> elements;
+        // Check if Kategorien erstellt worden sind im RecylerView //TODO: Recylerview can't be tested
+
 
         timer.stopAndPrintDuration();
 
