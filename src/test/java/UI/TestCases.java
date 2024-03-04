@@ -21,7 +21,6 @@ public class TestCases {
     static Timer timer = new Timer();
 
 
-
     public static void main(String[] args) throws IOException {
 
         try {
@@ -189,9 +188,7 @@ public class TestCases {
         backarrow.click();
         timer.stopAndPrintDuration();
 
-        //TODO check ob Toast message erschienen ist
 
-        //TODO: Check liste ob elemente richtig angezeigt werden
 
     }
 
@@ -213,17 +210,13 @@ public class TestCases {
         if (!recylerView.isDisplayed()) {
             System.out.println("Recylerview doesnt show");
         }
-
         timer.stopAndPrintDuration();
-
-        //TODO check if item was deleted
 
 
     }
 
     public static void shareTask() {
         timer.start();
-
         androidDriver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
         WebElement menu = androidDriver.findElement(By.id("org.secuso.privacyfriendlynotes:id/fab_expand_menu_button"));
         menu.click();

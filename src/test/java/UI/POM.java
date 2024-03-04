@@ -12,11 +12,9 @@ public class POM {
 
     By save_btn = By.id("org.secuso.privacyfriendlynotes:id/action_save");
 
-
     public POM(WebDriver webDriver) {
         this.webDriver = webDriver;
     }
-
     public void setTextInput(String note){
         webDriver.findElement(enterName).sendKeys(note);
 

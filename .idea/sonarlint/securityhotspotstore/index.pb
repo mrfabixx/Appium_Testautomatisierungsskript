@@ -9,3 +9,7 @@ O
 src/test/java/UI/TestCases.java,e\8\e8aa591de894bd26de1d019262972e9a58428b09
 P
  src/test/resources/testData.json,3\f\3fe36f2c4274e718dbab82ff87e62f0bf417a21d
+K
+src/test/java/UI/Timer.java,7\6\76c6035328233fa648c9bf9e776688763052cdbf
+I
+src/test/java/UI/POM.java,c\0\c0d29135711ca549b05accac7fe6fcd34478578e
